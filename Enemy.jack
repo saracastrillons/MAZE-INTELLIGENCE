@@ -1,89 +1,73 @@
 class Enemy {
     field int row;
     field int col;
-    field int cellSize;
-    field int offsetX;
-    field int offsetY;
 
-    constructor Enemy new(int startRow, int startCol) {
-        let row = startRow;
-        let col = startCol;
-        let cellSize = 12;
-        let offsetX = 40;
-        let offsetY = 45;
-
+    constructor Enemy new(int r, int c) {
+        let row = r;
+        let col = c;
         return this;
     }
 
-    method void moveTowards(int playerRow, int playerCol, Maze maze) {
-        var int diffRow;
-        var int diffCol;
-        var boolean moved;
+    method void update(Player player, Maze maze) {
+        var int dr, dc;
+        var int absDr, absDc;
 
-        let diffRow = abs(row - playerRow);
-        let diffCol = abs(col - playerCol);
-        let moved = false;
+        let dr = player.getRow() - row;
+        let dc = player.getCol() - col;
 
-        if (diffRow > diffCol) {
-            let moved = tryMoveVertical(playerRow, maze);
+        let absDr = abs(dr);
+        let absDc = abs(dc);
 
-            if (~moved) {
-                let moved = tryMoveHorizontal(playerCol, maze);
+        if (absDr > absDc) {
+            if (dr > 0) {
+                if (~tryMove(1, 0, maze)) {
+                    do moveHorizontal(dc, maze);
+                }
             }
-        } else {
-            let moved = tryMoveHorizontal(playerCol, maze);
 
-            if (~moved) {
-                let moved = tryMoveVertical(playerRow, maze);
+            if (dr < 0) {
+                if (~tryMove(-1, 0, maze)) {
+                    do moveHorizontal(dc, maze);
+                }
+            }
+            } else {
+            do moveHorizontal(dc, maze);
+        }
+
+        return;
+    }
+
+    method void moveHorizontal(int dc, Maze maze) {
+        if (dc > 0) {
+            if (~tryMove(0, 1, maze)) {
+                do moveVerticalFallback(maze);
+            }
+        }
+
+        if (dc < 0) {
+            if (~tryMove(0, -1, maze)) {
+                do moveVerticalFallback(maze);
             }
         }
 
         return;
     }
 
-    method boolean tryMoveVertical(int playerRow, Maze maze) {
-        var int newRow;
-
-        if (playerRow = row) {
-            return false;
+    method void moveVerticalFallback(Maze maze) {
+        if (~tryMove(-1, 0, maze)) {
+            do tryMove(1, 0, maze);
         }
-
-        let newRow = row;
-
-        if (playerRow < row) {
-            let newRow = row - 1;
-        }
-
-        if (playerRow > row) {
-            let newRow = row + 1;
-        }
-
-        if (maze.isWalkable(newRow, col)) {
-            let row = newRow;
-            return true;
-        }
-
-        return false;
+        return;
     }
 
-    method boolean tryMoveHorizontal(int playerCol, Maze maze) {
-        var int newCol;
+     method boolean tryMove(int dr, int dc, Maze maze) {
+        var int newRow, newCol;
 
-        if (playerCol = col) {
-            return false;
-        }
+        let newRow = row + dr;
+        let newCol = col + dc;
 
-        let newCol = col;
-
-        if (playerCol < col) {
-            let newCol = col - 1;
-        }
-
-        if (playerCol > col) {
-            let newCol = col + 1;
-        }
-
-        if (maze.isWalkable(row, newCol)) {
+        if (~maze.isWall(newRow, newCol)) {
+            let row = newRow;
             let col = newCol;
             return true;
         }
@@ -93,30 +77,26 @@ class Enemy {
 
     method int abs(int value) {
         if (value < 0) {
-            return value * -1;
+            return -value;
         }
-
         return value;
     }
 
     method void draw() {
-        var int x;
-        var int y;
+        var int x, y;
 
-        let x = offsetX + (col * cellSize);
-        let y = offsetY + (row * cellSize);
+        let x = col * 16;
+        let y = row * 16;
 
         do Screen.setColor(true);
-        do Screen.drawRectangle(x + 3, y + 3, x + 8, y + 8);
+        do Screen.drawRectangle(x + 2, y + 2, x + 13, y + 13);
+        do Screen.setColor(false);
+        do Screen.drawRectangle(x + 5, y + 5, x + 10, y + 10);
+        do Screen.setColor(true);
 
         return;
     }
 
-    method int getRow() {
-        return row;
-    }
-
-    method int getCol() {
-        return col;
-    }
+    method int getRow() { return row; }
+    method int getCol() { return col; }
 }

@@ -1,173 +1,261 @@
 function Maze.new 0
-    push constant 3
+    push constant 2
     call Memory.alloc 1
     pop pointer 0
-    push constant 12
+    push constant 256
+    call Array.new 1
     pop this 0
-    push constant 40
+    push constant 16
     pop this 1
-    push constant 45
-    pop this 2
     push pointer 0
+    call Maze.build 1
+    pop temp 0
+    push pointer 0
+    return
+function Maze.build 2
+    push argument 0
+    pop pointer 0
+    push constant 0
+    pop local 0
+label Maze_0
+    push local 0
+    push constant 16
+    lt
+    not
+    if-goto Maze_1
+    push constant 0
+    pop local 1
+label Maze_2
+    push local 1
+    push constant 16
+    lt
+    not
+    if-goto Maze_3
+    push local 0
+    push constant 0
+    eq
+    push local 0
+    push constant 15
+    eq
+    or
+    push local 1
+    push constant 0
+    eq
+    or
+    push local 1
+    push constant 15
+    eq
+    or
+    not
+    if-goto Maze_5
+    push pointer 0
+    push local 0
+    push local 1
+    push constant 1
+    call Maze.setCell 4
+    pop temp 0
+    goto Maze_4
+label Maze_5
+    push pointer 0
+    push local 0
+    push local 1
+    push constant 0
+    call Maze.setCell 4
+    pop temp 0
+label Maze_4
+    push local 1
+    push constant 1
+    add
+    pop local 1
+    goto Maze_2
+label Maze_3
+    push local 0
+    push constant 1
+    add
+    pop local 0
+    goto Maze_0
+label Maze_1
+    push pointer 0
+    push constant 2
+    push constant 2
+    push constant 1
+    call Maze.setCell 4
+    pop temp 0
+    push pointer 0
+    push constant 2
+    push constant 3
+    push constant 1
+    call Maze.setCell 4
+    pop temp 0
+    push pointer 0
+    push constant 2
+    push constant 4
+    push constant 1
+    call Maze.setCell 4
+    pop temp 0
+    push pointer 0
+    push constant 2
+    push constant 5
+    push constant 1
+    call Maze.setCell 4
+    pop temp 0
+    push pointer 0
+    push constant 4
+    push constant 4
+    push constant 1
+    call Maze.setCell 4
+    pop temp 0
+    push pointer 0
+    push constant 5
+    push constant 4
+    push constant 1
+    call Maze.setCell 4
+    pop temp 0
+    push pointer 0
+    push constant 6
+    push constant 4
+    push constant 1
+    call Maze.setCell 4
+    pop temp 0
+    push pointer 0
+    push constant 7
+    push constant 7
+    push constant 1
+    call Maze.setCell 4
+    pop temp 0
+    push pointer 0
+    push constant 7
+    push constant 8
+    push constant 1
+    call Maze.setCell 4
+    pop temp 0
+    push pointer 0
+    push constant 7
+    push constant 9
+    push constant 1
+    call Maze.setCell 4
+    pop temp 0
+    push pointer 0
+    push constant 9
+    push constant 2
+    push constant 1
+    call Maze.setCell 4
+    pop temp 0
+    push pointer 0
+    push constant 10
+    push constant 2
+    push constant 1
+    call Maze.setCell 4
+    pop temp 0
+    push pointer 0
+    push constant 11
+    push constant 2
+    push constant 1
+    call Maze.setCell 4
+    pop temp 0
+    push pointer 0
+    push constant 10
+    push constant 10
+    push constant 1
+    call Maze.setCell 4
+    pop temp 0
+    push pointer 0
+    push constant 10
+    push constant 11
+    push constant 1
+    call Maze.setCell 4
+    pop temp 0
+    push pointer 0
+    push constant 10
+    push constant 12
+    push constant 1
+    call Maze.setCell 4
+    pop temp 0
+    push pointer 0
+    push constant 14
+    push constant 14
+    push constant 2
+    call Maze.setCell 4
+    pop temp 0
+    push constant 0
+    return
+function Maze.setCell 0
+    push argument 0
+    pop pointer 0
+    push argument 1
+    push constant 16
+    call Math.multiply 2
+    push argument 2
+    add
+    push this 0
+    add
+    push argument 3
+    pop temp 0
+    pop pointer 1
+    push temp 0
+    pop that 0
+    push constant 0
     return
 function Maze.getCell 0
     push argument 0
     pop pointer 0
     push argument 1
-    push constant 0
-    lt
-    push argument 1
-    push constant 15
-    gt
-    or
+    push constant 16
+    call Math.multiply 2
     push argument 2
-    push constant 0
-    lt
-    or
-    push argument 2
-    push constant 15
-    gt
-    or
-    not
-    if-goto Maze_1
-    push constant 1
+    add
+    push this 0
+    add
+    pop pointer 1
+    push that 0
     return
-    goto Maze_0
-label Maze_1
-label Maze_0
+function Maze.isWall 0
+    push argument 0
+    pop pointer 0
     push argument 1
     push constant 0
-    eq
-    push argument 1
-    push constant 15
-    eq
-    or
-    push argument 2
-    push constant 0
-    eq
-    or
-    push argument 2
-    push constant 15
-    eq
-    or
-    not
-    if-goto Maze_3
-    push constant 1
-    return
-    goto Maze_2
-label Maze_3
-label Maze_2
-    push argument 1
-    push constant 4
-    eq
-    push argument 2
-    push constant 1
-    gt
-    and
-    push argument 2
-    push constant 12
     lt
-    and
-    push argument 2
-    push constant 7
-    eq
-    not
-    and
-    not
-    if-goto Maze_5
-    push constant 1
-    return
-    goto Maze_4
-label Maze_5
-label Maze_4
-    push argument 2
-    push constant 5
-    eq
-    push argument 1
-    push constant 4
-    gt
-    and
-    push argument 1
-    push constant 13
-    lt
-    and
-    push argument 1
-    push constant 9
-    eq
-    not
-    and
     not
     if-goto Maze_7
     push constant 1
+    neg
     return
     goto Maze_6
 label Maze_7
 label Maze_6
     push argument 1
-    push constant 10
-    eq
-    push argument 2
-    push constant 5
+    push constant 15
     gt
-    and
-    push argument 2
-    push constant 14
-    lt
-    and
-    push argument 2
-    push constant 11
-    eq
-    not
-    and
     not
     if-goto Maze_9
     push constant 1
+    neg
     return
     goto Maze_8
 label Maze_9
 label Maze_8
     push argument 2
-    push constant 11
-    eq
-    push argument 1
-    push constant 5
-    gt
-    and
-    push argument 1
-    push constant 10
+    push constant 0
     lt
-    and
-    push argument 1
-    push constant 7
-    eq
-    not
-    and
     not
     if-goto Maze_11
     push constant 1
+    neg
     return
     goto Maze_10
 label Maze_11
 label Maze_10
-    push argument 1
-    push constant 14
-    eq
     push argument 2
-    push constant 14
-    eq
-    and
+    push constant 15
+    gt
     not
     if-goto Maze_13
-    push constant 2
+    push constant 1
+    neg
     return
     goto Maze_12
 label Maze_13
 label Maze_12
-    push constant 0
-    return
-function Maze.isWalkable 0
-    push argument 0
-    pop pointer 0
     push pointer 0
     push argument 1
     push argument 2
@@ -176,13 +264,13 @@ function Maze.isWalkable 0
     eq
     not
     if-goto Maze_15
-    push constant 0
+    push constant 1
+    neg
     return
     goto Maze_14
 label Maze_15
 label Maze_14
-    push constant 1
-    neg
+    push constant 0
     return
 function Maze.isExit 0
     push argument 0
@@ -203,7 +291,7 @@ label Maze_17
 label Maze_16
     push constant 0
     return
-function Maze.draw 2
+function Maze.draw 5
     push argument 0
     pop pointer 0
     push constant 0
@@ -222,11 +310,67 @@ label Maze_20
     lt
     not
     if-goto Maze_21
+    push local 1
+    push this 1
+    call Math.multiply 2
+    pop local 2
+    push local 0
+    push this 1
+    call Math.multiply 2
+    pop local 3
     push pointer 0
     push local 0
     push local 1
-    call Maze.drawCell 3
+    call Maze.getCell 3
+    pop local 4
+    push local 4
+    push constant 1
+    eq
+    not
+    if-goto Maze_23
+    push constant 1
+    neg
+    call Screen.setColor 1
     pop temp 0
+    push local 2
+    push local 3
+    push local 2
+    push constant 15
+    add
+    push local 3
+    push constant 15
+    add
+    call Screen.drawRectangle 4
+    pop temp 0
+    goto Maze_22
+label Maze_23
+label Maze_22
+    push local 4
+    push constant 2
+    eq
+    not
+    if-goto Maze_25
+    push constant 1
+    neg
+    call Screen.setColor 1
+    pop temp 0
+    push local 2
+    push constant 4
+    add
+    push local 3
+    push constant 4
+    add
+    push local 2
+    push constant 11
+    add
+    push local 3
+    push constant 11
+    add
+    call Screen.drawRectangle 4
+    pop temp 0
+    goto Maze_24
+label Maze_25
+label Maze_24
     push local 1
     push constant 1
     add
@@ -240,118 +384,4 @@ label Maze_21
     goto Maze_18
 label Maze_19
     push constant 0
-    return
-function Maze.drawCell 3
-    push argument 0
-    pop pointer 0
-    push this 1
-    push argument 2
-    push this 0
-    call Math.multiply 2
-    add
-    pop local 0
-    push this 2
-    push argument 1
-    push this 0
-    call Math.multiply 2
-    add
-    pop local 1
-    push pointer 0
-    push argument 1
-    push argument 2
-    call Maze.getCell 3
-    pop local 2
-    push local 2
-    push constant 1
-    eq
-    not
-    if-goto Maze_23
-    push constant 1
-    neg
-    call Screen.setColor 1
-    pop temp 0
-    push local 0
-    push local 1
-    push local 0
-    push constant 11
-    add
-    push local 1
-    push constant 11
-    add
-    call Screen.drawRectangle 4
-    pop temp 0
-    goto Maze_22
-label Maze_23
-    push constant 0
-    call Screen.setColor 1
-    pop temp 0
-    push local 0
-    push local 1
-    push local 0
-    push constant 11
-    add
-    push local 1
-    push constant 11
-    add
-    call Screen.drawRectangle 4
-    pop temp 0
-    push constant 1
-    neg
-    call Screen.setColor 1
-    pop temp 0
-    push local 0
-    push local 1
-    push local 0
-    push constant 11
-    add
-    push local 1
-    call Screen.drawRectangle 4
-    pop temp 0
-    push local 0
-    push local 1
-    push local 0
-    push local 1
-    push constant 11
-    add
-    call Screen.drawRectangle 4
-    pop temp 0
-    push local 2
-    push constant 2
-    eq
-    not
-    if-goto Maze_25
-    push local 0
-    push constant 3
-    add
-    push local 1
-    push constant 3
-    add
-    push local 0
-    push constant 8
-    add
-    push local 1
-    push constant 8
-    add
-    call Screen.drawRectangle 4
-    pop temp 0
-    goto Maze_24
-label Maze_25
-label Maze_24
-label Maze_22
-    push constant 0
-    return
-function Maze.getCellSize 0
-    push argument 0
-    pop pointer 0
-    push this 0
-    return
-function Maze.getOffsetX 0
-    push argument 0
-    pop pointer 0
-    push this 1
-    return
-function Maze.getOffsetY 0
-    push argument 0
-    pop pointer 0
-    push this 2
     return

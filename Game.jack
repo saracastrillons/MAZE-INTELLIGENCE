@@ -2,124 +2,84 @@ class Game {
     field Maze maze;
     field Player player;
     field Enemy enemy;
-    field boolean running;
+
+    field int state;        // 0=jugando, 1=victoria, 2=derrota
+    field int tick;
 
     constructor Game new() {
         let maze = Maze.new();
         let player = Player.new(1, 1);
-        let enemy = Enemy.new(14, 14);
-        let running = true;
-
+        let enemy = Enemy.new(14, 13);
+        let state = 0;
+        let tick = 0;
         return this;
     }
 
     method void run() {
         var int key;
-        var int oldPlayerRow;
-        var int oldPlayerCol;
-        var int oldEnemyRow;
-        var int oldEnemyCol;
 
-        do drawInitialScreen();
+        while (state = 0) {
+            let key = Keyboard.keyPressed();
+            do handleInput(key);
 
-        while (running) {
-            let key = waitForKey();
-
-            if ((key = 81) | (key = 113)) {
-                let running = false;
-            } else {
-                if (isMovementKey(key)) {
-                    let oldPlayerRow = player.getRow();
-                    let oldPlayerCol = player.getCol();
-                    let oldEnemyRow = enemy.getRow();
-                    let oldEnemyCol = enemy.getCol();
-
-                    do player.handleInput(key, maze);
-
-                    if (maze.isExit(player.getRow(), player.getCol())) {
-                        do redrawCell(oldPlayerRow, oldPlayerCol);
-                        do player.draw();
-                        do showVictory();
-                        let running = false;
-                    } else {
-                        do enemy.moveTowards(player.getRow(), player.getCol(), maze);
-
-                        do redrawCell(oldPlayerRow, oldPlayerCol);
-                        do redrawCell(oldEnemyRow, oldEnemyCol);
-                        do redrawCell(player.getRow(), player.getCol());
-                        do redrawCell(enemy.getRow(), enemy.getCol());
-
-                        do player.draw();
-                        do enemy.draw();
-
-                        if ((player.getRow() = enemy.getRow()) & (player.getCol() = enemy.getCol())) {
-                            do showDefeat();
-                            let running = false;
-                        }
-                    }
-                }
+            // El enemigo se mueve cada 6 ciclos.
+            let tick = tick + 1;
+            if (tick > 5) {
+                do enemy.update(player, maze);
+                let tick = 0;
             }
+            do checkGameState();
+            do draw();
+
+            do Sys.wait(20);
+        }
+
+        do showEndMessage();
+        return;
+    }
+
+    method void handleInput(int key) {
+        if (key = 131) { do player.move(-1, 0, maze); }
+        if (key = 133) { do player.move(1, 0, maze); }
+        if (key = 130) { do player.move(0, -1, maze); }
+        if (key = 132) { do player.move(0, 1, maze); }
+        return;
+    }
+
+    method void checkGameState() {
+        if ((player.getRow() = enemy.getRow()) & (player.getCol() = enemy.getCol())) {
+            let state = 2;
+        }
+
+        if (maze.isExit(player.getRow(), player.getCol())) {
+            let state = 1;
         }
 
         return;
     }
-
-    method void drawInitialScreen() {
+    method void draw() {
         do Screen.clearScreen();
-
-        do Output.moveCursor(0, 0);
-        do Output.printString("Maze Intelligence");
-        do Output.moveCursor(1, 0);
-        do Output.printString("Flechas: mover | Q: salir");
-
         do maze.draw();
         do player.draw();
         do enemy.draw();
-
         return;
     }
 
-    method void redrawCell(int r, int c) {
-        do maze.drawCell(r, c);
-        return;
-    }
+    method void showEndMessage() {
+        do Output.moveCursor(22, 0);
 
-    method int waitForKey() {
-        var int key;
-
-        let key = 0;
-
-        while (key = 0) {
-            let key = Keyboard.keyPressed();
-            do Sys.wait(5);
+        if (state = 1) {
+            do Output.printString("VICTORIA! ESCAPASTE.");
         }
 
-        while (~(Keyboard.keyPressed() = 0)) {
-            do Sys.wait(5);
+        if (state = 2) {
+            do Output.printString("DERROTA! TE ATRAPARON.");
         }
 
-        return key;
-    }
-
-    method boolean isMovementKey(int key) {
-        if ((key = 130) | (key = 131) | (key = 132) | (key = 133)) {
-            return true;
+        while (true) {
+            do Sys.wait(1000);
         }
 
-        return false;
-    }
-
-    method void showVictory() {
-        do Output.moveCursor(2, 0);
-        do Output.printString("VICTORIA: llegaste a la salida.");
-        do Sys.wait(2000);
-        return;
-    }
-
-    method void showDefeat() {
-        do Output.moveCursor(2, 0);
-        do Output.printString("DERROTA: el enemigo te atrapo.");
-        do Sys.wait(2000);
         return;
     }
 }

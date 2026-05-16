@@ -1,121 +1,114 @@
 class Maze {
+    field Array grid;
     field int cellSize;
-    field int offsetX;
-    field int offsetY;
 
     constructor Maze new() {
-        let cellSize = 12;
-        let offsetX = 40;
-        let offsetY = 45;
-
+        let grid = Array.new(256);
+        let cellSize = 16;
+        do build();
         return this;
     }
 
-    method int getCell(int r, int c) {
-        if ((r < 0) | (r > 15) | (c < 0) | (c > 15)) {
-            return 1;
+    method void build() {
+        var int r, c;
+
+        let r = 0;
+        while (r < 16) {
+            let c = 0;
+            while (c < 16) {
+                if ((r = 0) | (r = 15) | (c = 0) | (c = 15)) {
+                    do setCell(r, c, 1);
+                } else {
+                    do setCell(r, c, 0);
+                }
+                let c = c + 1;
+            }
+            let r = r + 1;
         }
 
-        if ((r = 0) | (r = 15) | (c = 0) | (c = 15)) {
-            return 1;
-        }
+        // Muros internos.
+        do setCell(2,2,1);
+        do setCell(2,3,1);
+        do setCell(2,4,1);
+        do setCell(2,5,1);
 
-        if ((r = 4) & (c > 1) & (c < 12) & (~(c = 7))) {
-            return 1;
-        }
+        do setCell(4,4,1);
+        do setCell(5,4,1);
+        do setCell(6,4,1);
 
-        if ((c = 5) & (r > 4) & (r < 13) & (~(r = 9))) {
-            return 1;
-        }
+        do setCell(7,7,1);
+        do setCell(7,8,1);
+        do setCell(7,9,1);
 
-        if ((r = 10) & (c > 5) & (c < 14) & (~(c = 11))) {
-            return 1;
-        }
+        do setCell(9,2,1);
+        do setCell(10,2,1);
+        do setCell(11,2,1);
 
-        if ((c = 11) & (r > 5) & (r < 10) & (~(r = 7))) {
-            return 1;
-        }
+        do setCell(10,10,1);
+        do setCell(10,11,1);
+        do setCell(10,12,1);
 
-        if ((r = 14) & (c = 14)) {
-            return 2;
-        }
+        // Salida.
+        do setCell(14,14,2);
 
-        return 0;
+        return;
     }
 
-    method boolean isWalkable(int r, int c) {
-        if (getCell(r, c) = 1) {
-            return false;
-        }
-
-        return true;
+    method void setCell(int row, int col, int value) {
+        let grid[(row * 16) + col] = value;
+        return;
     }
 
-    method boolean isExit(int r, int c) {
-        if (getCell(r, c) = 2) {
+    method int getCell(int row, int col) {
+        return grid[(row * 16) + col];
+    }
+
+    method boolean isWall(int row, int col) {
+        if (row < 0) { return true; }
+        if (row > 15) { return true; }
+        if (col < 0) { return true; }
+        if (col > 15) { return true; }
+
+        if (getCell(row, col) = 1) {
             return true;
         }
 
         return false;
     }
 
+    method boolean isExit(int row, int col) {
+        if (getCell(row, col) = 2) {
+            return true;
+        }
+        return false;
+    }
+
     method void draw() {
-        var int r;
-        var int c;
+        var int r, c, x, y, value;
 
         let r = 0;
-
         while (r < 16) {
             let c = 0;
-
             while (c < 16) {
-                do drawCell(r, c);
+                let x = c * cellSize;
+                let y = r * cellSize;
+                let value = getCell(r, c);
+
+                if (value = 1) {
+                    do Screen.setColor(true);
+                    do Screen.drawRectangle(x, y, x + 15, y + 15);
+                }
+
+                if (value = 2) {
+                    do Screen.setColor(true);
+                    do Screen.drawRectangle(x + 4, y + 4, x + 11, y + 11);
+                }
+
                 let c = c + 1;
             }
-
             let r = r + 1;
         }
 
         return;
-    }
-
-    method void drawCell(int r, int c) {
-        var int x;
-        var int y;
-        var int cell;
-
-        let x = offsetX + (c * cellSize);
-        let y = offsetY + (r * cellSize);
-        let cell = getCell(r, c);
-
-        if (cell = 1) {
-            do Screen.setColor(true);
-            do Screen.drawRectangle(x, y, x + 11, y + 11);
-        } else {
-            do Screen.setColor(false);
-            do Screen.drawRectangle(x, y, x + 11, y + 11);
-
-            do Screen.setColor(true);
-            do Screen.drawRectangle(x, y, x + 11, y);
-            do Screen.drawRectangle(x, y, x, y + 11);
-
-            if (cell = 2) {
-                do Screen.drawRectangle(x + 3, y + 3, x + 8, y + 8);
-            }
-        }
-
-        return;
-    }
-
-    method int getCellSize() {
-        return cellSize;
-    }
-
-    method int getOffsetX() {
-        return offsetX;
-    }
-
-    method int getOffsetY() {
-        return offsetY;
     }
 }
