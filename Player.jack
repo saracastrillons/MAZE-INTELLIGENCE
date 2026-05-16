@@ -1,0 +1,69 @@
+class Player {
+    field int row;
+    field int col;
+    field int cellSize;
+    field int offsetX;
+    field int offsetY;
+
+    constructor Player new(int startRow, int startCol) {
+        let row = startRow;
+        let col = startCol;
+        let cellSize = 12;
+        let offsetX = 40;
+        let offsetY = 45;
+
+        return this;
+    }
+
+    method void handleInput(int key, Maze maze) {
+        var int newRow;
+        var int newCol;
+
+        let newRow = row;
+        let newCol = col;
+
+        if (key = 131) {
+            let newRow = row - 1;
+        }
+
+        if (key = 133) {
+            let newRow = row + 1;
+        }
+
+        if (key = 130) {
+            let newCol = col - 1;
+        }
+
+        if (key = 132) {
+            let newCol = col + 1;
+        }
+
+        if (maze.isWalkable(newRow, newCol)) {
+            let row = newRow;
+            let col = newCol;
+        }
+
+        return;
+    }
+
+    method void draw() {
+        var int x;
+        var int y;
+
+        let x = offsetX + (col * cellSize);
+        let y = offsetY + (row * cellSize);
+
+        do Screen.setColor(true);
+        do Screen.drawCircle(x + 6, y + 6, 4);
+
+        return;
+    }
+
+    method int getRow() {
+        return row;
+    }
+
+    method int getCol() {
+        return col;
+    }
+}

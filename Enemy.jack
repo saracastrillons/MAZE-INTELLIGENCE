@@ -1,0 +1,122 @@
+class Enemy {
+    field int row;
+    field int col;
+    field int cellSize;
+    field int offsetX;
+    field int offsetY;
+
+    constructor Enemy new(int startRow, int startCol) {
+        let row = startRow;
+        let col = startCol;
+        let cellSize = 12;
+        let offsetX = 40;
+        let offsetY = 45;
+
+        return this;
+    }
+
+    method void moveTowards(int playerRow, int playerCol, Maze maze) {
+        var int diffRow;
+        var int diffCol;
+        var boolean moved;
+
+        let diffRow = abs(row - playerRow);
+        let diffCol = abs(col - playerCol);
+        let moved = false;
+
+        if (diffRow > diffCol) {
+            let moved = tryMoveVertical(playerRow, maze);
+
+            if (~moved) {
+                let moved = tryMoveHorizontal(playerCol, maze);
+            }
+        } else {
+            let moved = tryMoveHorizontal(playerCol, maze);
+
+            if (~moved) {
+                let moved = tryMoveVertical(playerRow, maze);
+            }
+        }
+
+        return;
+    }
+
+    method boolean tryMoveVertical(int playerRow, Maze maze) {
+        var int newRow;
+
+        if (playerRow = row) {
+            return false;
+        }
+
+        let newRow = row;
+
+        if (playerRow < row) {
+            let newRow = row - 1;
+        }
+
+        if (playerRow > row) {
+            let newRow = row + 1;
+        }
+
+        if (maze.isWalkable(newRow, col)) {
+            let row = newRow;
+            return true;
+        }
+
+        return false;
+    }
+
+    method boolean tryMoveHorizontal(int playerCol, Maze maze) {
+        var int newCol;
+
+        if (playerCol = col) {
+            return false;
+        }
+
+        let newCol = col;
+
+        if (playerCol < col) {
+            let newCol = col - 1;
+        }
+
+        if (playerCol > col) {
+            let newCol = col + 1;
+        }
+
+        if (maze.isWalkable(row, newCol)) {
+            let col = newCol;
+            return true;
+        }
+
+        return false;
+    }
+
+    method int abs(int value) {
+        if (value < 0) {
+            return value * -1;
+        }
+
+        return value;
+    }
+
+    method void draw() {
+        var int x;
+        var int y;
+
+        let x = offsetX + (col * cellSize);
+        let y = offsetY + (row * cellSize);
+
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x + 3, y + 3, x + 8, y + 8);
+
+        return;
+    }
+
+    method int getRow() {
+        return row;
+    }
+
+    method int getCol() {
+        return col;
+    }
+}

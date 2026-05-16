@@ -1,0 +1,121 @@
+class Maze {
+    field int cellSize;
+    field int offsetX;
+    field int offsetY;
+
+    constructor Maze new() {
+        let cellSize = 12;
+        let offsetX = 40;
+        let offsetY = 45;
+
+        return this;
+    }
+
+    method int getCell(int r, int c) {
+        if ((r < 0) | (r > 15) | (c < 0) | (c > 15)) {
+            return 1;
+        }
+
+        if ((r = 0) | (r = 15) | (c = 0) | (c = 15)) {
+            return 1;
+        }
+
+        if ((r = 4) & (c > 1) & (c < 12) & (~(c = 7))) {
+            return 1;
+        }
+
+        if ((c = 5) & (r > 4) & (r < 13) & (~(r = 9))) {
+            return 1;
+        }
+
+        if ((r = 10) & (c > 5) & (c < 14) & (~(c = 11))) {
+            return 1;
+        }
+
+        if ((c = 11) & (r > 5) & (r < 10) & (~(r = 7))) {
+            return 1;
+        }
+
+        if ((r = 14) & (c = 14)) {
+            return 2;
+        }
+
+        return 0;
+    }
+
+    method boolean isWalkable(int r, int c) {
+        if (getCell(r, c) = 1) {
+            return false;
+        }
+
+        return true;
+    }
+
+    method boolean isExit(int r, int c) {
+        if (getCell(r, c) = 2) {
+            return true;
+        }
+
+        return false;
+    }
+
+    method void draw() {
+        var int r;
+        var int c;
+
+        let r = 0;
+
+        while (r < 16) {
+            let c = 0;
+
+            while (c < 16) {
+                do drawCell(r, c);
+                let c = c + 1;
+            }
+
+            let r = r + 1;
+        }
+
+        return;
+    }
+
+    method void drawCell(int r, int c) {
+        var int x;
+        var int y;
+        var int cell;
+
+        let x = offsetX + (c * cellSize);
+        let y = offsetY + (r * cellSize);
+        let cell = getCell(r, c);
+
+        if (cell = 1) {
+            do Screen.setColor(true);
+            do Screen.drawRectangle(x, y, x + 11, y + 11);
+        } else {
+            do Screen.setColor(false);
+            do Screen.drawRectangle(x, y, x + 11, y + 11);
+
+            do Screen.setColor(true);
+            do Screen.drawRectangle(x, y, x + 11, y);
+            do Screen.drawRectangle(x, y, x, y + 11);
+
+            if (cell = 2) {
+                do Screen.drawRectangle(x + 3, y + 3, x + 8, y + 8);
+            }
+        }
+
+        return;
+    }
+
+    method int getCellSize() {
+        return cellSize;
+    }
+
+    method int getOffsetX() {
+        return offsetX;
+    }
+
+    method int getOffsetY() {
+        return offsetY;
+    }
+}
