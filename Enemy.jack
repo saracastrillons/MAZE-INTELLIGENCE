@@ -1,16 +1,28 @@
 class Enemy {
     field int row;
     field int col;
+    field int lastMove;
 
     constructor Enemy new(int r, int c) {
         let row = r;
         let col = c;
+        let lastMove = 0;
+
         return this;
+    }
+
+    method void setPosition(int r, int c) {
+        let row = r;
+        let col = c;
+        let lastMove = 0;
+
+        return;
     }
 
     method void update(Player player, Maze maze) {
         var int dr, dc;
         var int absDr, absDc;
+        var boolean moved;
 
         let dr = player.getRow() - row;
         let dc = player.getCol() - col;
@@ -18,49 +30,138 @@ class Enemy {
         let absDr = abs(dr);
         let absDc = abs(dc);
 
-        if (absDr > absDc) {
-            if (dr > 0) {
-                if (~tryMove(1, 0, maze)) {
-                    do moveHorizontal(dc, maze);
-                }
-            }
+        let moved = false;
 
-            if (dr < 0) {
-                if (~tryMove(-1, 0, maze)) {
-                    do moveHorizontal(dc, maze);
-                }
-            }
-            } else {
-            do moveHorizontal(dc, maze);
+        if (absDr > absDc) {
+            let moved = chaseVerticalFirst(dr, dc, maze);
+        } else {
+            let moved = chaseHorizontalFirst(dr, dc, maze);
+        }
+
+        if (~moved) {
+            let moved = exploreMove(maze);
         }
 
         return;
     }
 
-    method void moveHorizontal(int dc, Maze maze) {
+    method boolean chaseVerticalFirst(int dr, int dc, Maze maze) {
+        var boolean moved;
+
+        let moved = tryVertical(dr, maze);
+
+        if (~moved) {
+            let moved = tryHorizontal(dc, maze);
+        }
+
+        if (~moved) {
+            let moved = tryOppositeVertical(dr, maze);
+        }
+
+        if (~moved) {
+            let moved = tryOppositeHorizontal(dc, maze);
+        }
+
+        return moved;
+    }
+
+    method boolean chaseHorizontalFirst(int dr, int dc, Maze maze) {
+        var boolean moved;
+
+        let moved = tryHorizontal(dc, maze);
+
+        if (~moved) {
+            let moved = tryVertical(dr, maze);
+        }
+
+        if (~moved) {
+            let moved = tryOppositeHorizontal(dc, maze);
+        }
+
+        if (~moved) {
+            let moved = tryOppositeVertical(dr, maze);
+        }
+
+        return moved;
+    }
+
+    method boolean tryVertical(int dr, Maze maze) {
+        if (dr > 0) {
+            return tryMove(1, 0, maze, 3);
+        }
+
+        if (dr < 0) {
+            return tryMove(-1, 0, maze, 1);
+        }
+
+        return false;
+    }
+
+    method boolean tryHorizontal(int dc, Maze maze) {
         if (dc > 0) {
-            if (~tryMove(0, 1, maze)) {
-                do moveVerticalFallback(maze);
-            }
+            return tryMove(0, 1, maze, 4);
         }
 
         if (dc < 0) {
-            if (~tryMove(0, -1, maze)) {
-                do moveVerticalFallback(maze);
+            return tryMove(0, -1, maze, 2);
+        }
+
+        return false;
+    }
+
+    method boolean tryOppositeVertical(int dr, Maze maze) {
+        if (dr > 0) {
+            return tryMove(-1, 0, maze, 1);
+        }
+
+        if (dr < 0) {
+            return tryMove(1, 0, maze, 3);
+        }
+
+        return false;
+    }
+
+    method boolean tryOppositeHorizontal(int dc, Maze maze) {
+        if (dc > 0) {
+            return tryMove(0, -1, maze, 2);
+        }
+
+        if (dc < 0) {
+            return tryMove(0, 1, maze, 4);
+        }
+
+        return false;
+    }
+
+    method boolean exploreMove(Maze maze) {
+        if (~(lastMove = 3)) {
+            if (tryMove(-1, 0, maze, 1)) {
+                return true;
             }
         }
 
-        return;
-    }
-
-    method void moveVerticalFallback(Maze maze) {
-        if (~tryMove(-1, 0, maze)) {
-            do tryMove(1, 0, maze);
+        if (~(lastMove = 2)) {
+            if (tryMove(0, 1, maze, 4)) {
+                return true;
+            }
         }
-        return;
+
+        if (~(lastMove = 1)) {
+            if (tryMove(1, 0, maze, 3)) {
+                return true;
+            }
+        }
+
+        if (~(lastMove = 4)) {
+            if (tryMove(0, -1, maze, 2)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-     method boolean tryMove(int dr, int dc, Maze maze) {
+    method boolean tryMove(int dr, int dc, Maze maze, int direction) {
         var int newRow, newCol;
 
         let newRow = row + dr;
@@ -69,6 +170,8 @@ class Enemy {
         if (~maze.isWall(newRow, newCol)) {
             let row = newRow;
             let col = newCol;
+            let lastMove = direction;
+
             return true;
         }
 
@@ -79,6 +182,7 @@ class Enemy {
         if (value < 0) {
             return -value;
         }
+
         return value;
     }
 
@@ -89,14 +193,23 @@ class Enemy {
         let y = row * 16;
 
         do Screen.setColor(true);
-        do Screen.drawRectangle(x + 2, y + 2, x + 13, y + 13);
+        do Screen.drawRectangle(x + 2, y + 3, x + 13, y + 12);
+
         do Screen.setColor(false);
-        do Screen.drawRectangle(x + 5, y + 5, x + 10, y + 10);
+        do Screen.drawRectangle(x + 4, y + 5, x + 5, y + 6);
+        do Screen.drawRectangle(x + 10, y + 5, x + 11, y + 6);
+
         do Screen.setColor(true);
+        do Screen.drawRectangle(x + 5, y + 10, x + 10, y + 11);
 
         return;
     }
 
-    method int getRow() { return row; }
-    method int getCol() { return col; }
+    method int getRow() {
+        return row;
+    }
+
+    method int getCol() {
+        return col;
+    }
 }

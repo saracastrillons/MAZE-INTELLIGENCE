@@ -1,14 +1,27 @@
 function Enemy.new 0
-    push constant 2
+    push constant 3
     call Memory.alloc 1
     pop pointer 0
     push argument 0
     pop this 0
     push argument 1
     pop this 1
+    push constant 0
+    pop this 2
     push pointer 0
     return
-function Enemy.update 4
+function Enemy.setPosition 0
+    push argument 0
+    pop pointer 0
+    push argument 1
+    pop this 0
+    push argument 2
+    pop this 1
+    push constant 0
+    pop this 2
+    push constant 0
+    return
+function Enemy.update 5
     push argument 0
     pop pointer 0
     push argument 1
@@ -29,143 +42,374 @@ function Enemy.update 4
     push local 1
     call Enemy.abs 2
     pop local 3
+    push constant 0
+    pop local 4
     push local 2
     push local 3
     gt
     not
     if-goto Enemy_1
+    push pointer 0
     push local 0
-    push constant 0
-    gt
+    push local 1
+    push argument 2
+    call Enemy.chaseVerticalFirst 4
+    pop local 4
+    goto Enemy_0
+label Enemy_1
+    push pointer 0
+    push local 0
+    push local 1
+    push argument 2
+    call Enemy.chaseHorizontalFirst 4
+    pop local 4
+label Enemy_0
+    push local 4
+    not
     not
     if-goto Enemy_3
     push pointer 0
-    push constant 1
-    push constant 0
     push argument 2
-    call Enemy.tryMove 4
+    call Enemy.exploreMove 2
+    pop local 4
+    goto Enemy_2
+label Enemy_3
+label Enemy_2
+    push constant 0
+    return
+function Enemy.chaseVerticalFirst 1
+    push argument 0
+    pop pointer 0
+    push pointer 0
+    push argument 1
+    push argument 3
+    call Enemy.tryVertical 3
+    pop local 0
+    push local 0
     not
     not
     if-goto Enemy_5
     push pointer 0
-    push local 1
     push argument 2
-    call Enemy.moveHorizontal 3
-    pop temp 0
+    push argument 3
+    call Enemy.tryHorizontal 3
+    pop local 0
     goto Enemy_4
 label Enemy_5
 label Enemy_4
-    goto Enemy_2
-label Enemy_3
-label Enemy_2
     push local 0
-    push constant 0
-    lt
+    not
     not
     if-goto Enemy_7
     push pointer 0
-    push constant 1
-    neg
-    push constant 0
-    push argument 2
-    call Enemy.tryMove 4
+    push argument 1
+    push argument 3
+    call Enemy.tryOppositeVertical 3
+    pop local 0
+    goto Enemy_6
+label Enemy_7
+label Enemy_6
+    push local 0
     not
     not
     if-goto Enemy_9
     push pointer 0
-    push local 1
     push argument 2
-    call Enemy.moveHorizontal 3
-    pop temp 0
+    push argument 3
+    call Enemy.tryOppositeHorizontal 3
+    pop local 0
     goto Enemy_8
 label Enemy_9
 label Enemy_8
-    goto Enemy_6
-label Enemy_7
-label Enemy_6
-    goto Enemy_0
-label Enemy_1
-    push pointer 0
-    push local 1
-    push argument 2
-    call Enemy.moveHorizontal 3
-    pop temp 0
-label Enemy_0
-    push constant 0
+    push local 0
     return
-function Enemy.moveHorizontal 0
+function Enemy.chaseHorizontalFirst 1
     push argument 0
     pop pointer 0
-    push argument 1
-    push constant 0
-    gt
+    push pointer 0
+    push argument 2
+    push argument 3
+    call Enemy.tryHorizontal 3
+    pop local 0
+    push local 0
+    not
     not
     if-goto Enemy_11
     push pointer 0
-    push constant 0
-    push constant 1
-    push argument 2
-    call Enemy.tryMove 4
+    push argument 1
+    push argument 3
+    call Enemy.tryVertical 3
+    pop local 0
+    goto Enemy_10
+label Enemy_11
+label Enemy_10
+    push local 0
     not
     not
     if-goto Enemy_13
     push pointer 0
     push argument 2
-    call Enemy.moveVerticalFallback 2
-    pop temp 0
+    push argument 3
+    call Enemy.tryOppositeHorizontal 3
+    pop local 0
     goto Enemy_12
 label Enemy_13
 label Enemy_12
-    goto Enemy_10
-label Enemy_11
-label Enemy_10
+    push local 0
+    not
+    not
+    if-goto Enemy_15
+    push pointer 0
+    push argument 1
+    push argument 3
+    call Enemy.tryOppositeVertical 3
+    pop local 0
+    goto Enemy_14
+label Enemy_15
+label Enemy_14
+    push local 0
+    return
+function Enemy.tryVertical 0
+    push argument 0
+    pop pointer 0
+    push argument 1
+    push constant 0
+    gt
+    not
+    if-goto Enemy_17
+    push pointer 0
+    push constant 1
+    push constant 0
+    push argument 2
+    push constant 3
+    call Enemy.tryMove 5
+    return
+    goto Enemy_16
+label Enemy_17
+label Enemy_16
     push argument 1
     push constant 0
     lt
     not
-    if-goto Enemy_15
-    push pointer 0
-    push constant 0
-    push constant 1
-    neg
-    push argument 2
-    call Enemy.tryMove 4
-    not
-    not
-    if-goto Enemy_17
-    push pointer 0
-    push argument 2
-    call Enemy.moveVerticalFallback 2
-    pop temp 0
-    goto Enemy_16
-label Enemy_17
-label Enemy_16
-    goto Enemy_14
-label Enemy_15
-label Enemy_14
-    push constant 0
-    return
-function Enemy.moveVerticalFallback 0
-    push argument 0
-    pop pointer 0
-    push pointer 0
-    push constant 1
-    neg
-    push constant 0
-    push argument 1
-    call Enemy.tryMove 4
-    not
-    not
     if-goto Enemy_19
     push pointer 0
     push constant 1
+    neg
     push constant 0
-    push argument 1
-    call Enemy.tryMove 4
-    pop temp 0
+    push argument 2
+    push constant 1
+    call Enemy.tryMove 5
+    return
     goto Enemy_18
 label Enemy_19
 label Enemy_18
+    push constant 0
+    return
+function Enemy.tryHorizontal 0
+    push argument 0
+    pop pointer 0
+    push argument 1
+    push constant 0
+    gt
+    not
+    if-goto Enemy_21
+    push pointer 0
+    push constant 0
+    push constant 1
+    push argument 2
+    push constant 4
+    call Enemy.tryMove 5
+    return
+    goto Enemy_20
+label Enemy_21
+label Enemy_20
+    push argument 1
+    push constant 0
+    lt
+    not
+    if-goto Enemy_23
+    push pointer 0
+    push constant 0
+    push constant 1
+    neg
+    push argument 2
+    push constant 2
+    call Enemy.tryMove 5
+    return
+    goto Enemy_22
+label Enemy_23
+label Enemy_22
+    push constant 0
+    return
+function Enemy.tryOppositeVertical 0
+    push argument 0
+    pop pointer 0
+    push argument 1
+    push constant 0
+    gt
+    not
+    if-goto Enemy_25
+    push pointer 0
+    push constant 1
+    neg
+    push constant 0
+    push argument 2
+    push constant 1
+    call Enemy.tryMove 5
+    return
+    goto Enemy_24
+label Enemy_25
+label Enemy_24
+    push argument 1
+    push constant 0
+    lt
+    not
+    if-goto Enemy_27
+    push pointer 0
+    push constant 1
+    push constant 0
+    push argument 2
+    push constant 3
+    call Enemy.tryMove 5
+    return
+    goto Enemy_26
+label Enemy_27
+label Enemy_26
+    push constant 0
+    return
+function Enemy.tryOppositeHorizontal 0
+    push argument 0
+    pop pointer 0
+    push argument 1
+    push constant 0
+    gt
+    not
+    if-goto Enemy_29
+    push pointer 0
+    push constant 0
+    push constant 1
+    neg
+    push argument 2
+    push constant 2
+    call Enemy.tryMove 5
+    return
+    goto Enemy_28
+label Enemy_29
+label Enemy_28
+    push argument 1
+    push constant 0
+    lt
+    not
+    if-goto Enemy_31
+    push pointer 0
+    push constant 0
+    push constant 1
+    push argument 2
+    push constant 4
+    call Enemy.tryMove 5
+    return
+    goto Enemy_30
+label Enemy_31
+label Enemy_30
+    push constant 0
+    return
+function Enemy.exploreMove 0
+    push argument 0
+    pop pointer 0
+    push this 2
+    push constant 3
+    eq
+    not
+    not
+    if-goto Enemy_33
+    push pointer 0
+    push constant 1
+    neg
+    push constant 0
+    push argument 1
+    push constant 1
+    call Enemy.tryMove 5
+    not
+    if-goto Enemy_35
+    push constant 1
+    neg
+    return
+    goto Enemy_34
+label Enemy_35
+label Enemy_34
+    goto Enemy_32
+label Enemy_33
+label Enemy_32
+    push this 2
+    push constant 2
+    eq
+    not
+    not
+    if-goto Enemy_37
+    push pointer 0
+    push constant 0
+    push constant 1
+    push argument 1
+    push constant 4
+    call Enemy.tryMove 5
+    not
+    if-goto Enemy_39
+    push constant 1
+    neg
+    return
+    goto Enemy_38
+label Enemy_39
+label Enemy_38
+    goto Enemy_36
+label Enemy_37
+label Enemy_36
+    push this 2
+    push constant 1
+    eq
+    not
+    not
+    if-goto Enemy_41
+    push pointer 0
+    push constant 1
+    push constant 0
+    push argument 1
+    push constant 3
+    call Enemy.tryMove 5
+    not
+    if-goto Enemy_43
+    push constant 1
+    neg
+    return
+    goto Enemy_42
+label Enemy_43
+label Enemy_42
+    goto Enemy_40
+label Enemy_41
+label Enemy_40
+    push this 2
+    push constant 4
+    eq
+    not
+    not
+    if-goto Enemy_45
+    push pointer 0
+    push constant 0
+    push constant 1
+    neg
+    push argument 1
+    push constant 2
+    call Enemy.tryMove 5
+    not
+    if-goto Enemy_47
+    push constant 1
+    neg
+    return
+    goto Enemy_46
+label Enemy_47
+label Enemy_46
+    goto Enemy_44
+label Enemy_45
+label Enemy_44
     push constant 0
     return
 function Enemy.tryMove 2
@@ -185,17 +429,19 @@ function Enemy.tryMove 2
     call Maze.isWall 3
     not
     not
-    if-goto Enemy_21
+    if-goto Enemy_49
     push local 0
     pop this 0
     push local 1
     pop this 1
+    push argument 4
+    pop this 2
     push constant 1
     neg
     return
-    goto Enemy_20
-label Enemy_21
-label Enemy_20
+    goto Enemy_48
+label Enemy_49
+label Enemy_48
     push constant 0
     return
 function Enemy.abs 0
@@ -205,13 +451,13 @@ function Enemy.abs 0
     push constant 0
     lt
     not
-    if-goto Enemy_23
+    if-goto Enemy_51
     push argument 1
     neg
     return
-    goto Enemy_22
-label Enemy_23
-label Enemy_22
+    goto Enemy_50
+label Enemy_51
+label Enemy_50
     push argument 1
     return
 function Enemy.draw 2
@@ -233,13 +479,13 @@ function Enemy.draw 2
     push constant 2
     add
     push local 1
-    push constant 2
+    push constant 3
     add
     push local 0
     push constant 13
     add
     push local 1
-    push constant 13
+    push constant 12
     add
     call Screen.drawRectangle 4
     pop temp 0
@@ -247,22 +493,50 @@ function Enemy.draw 2
     call Screen.setColor 1
     pop temp 0
     push local 0
-    push constant 5
+    push constant 4
     add
     push local 1
     push constant 5
     add
     push local 0
+    push constant 5
+    add
+    push local 1
+    push constant 6
+    add
+    call Screen.drawRectangle 4
+    pop temp 0
+    push local 0
     push constant 10
     add
     push local 1
-    push constant 10
+    push constant 5
+    add
+    push local 0
+    push constant 11
+    add
+    push local 1
+    push constant 6
     add
     call Screen.drawRectangle 4
     pop temp 0
     push constant 1
     neg
     call Screen.setColor 1
+    pop temp 0
+    push local 0
+    push constant 5
+    add
+    push local 1
+    push constant 10
+    add
+    push local 0
+    push constant 10
+    add
+    push local 1
+    push constant 11
+    add
+    call Screen.drawRectangle 4
     pop temp 0
     push constant 0
     return

@@ -18,15 +18,125 @@ function Game.new 0
     pop this 4
     push pointer 0
     return
-function Game.run 1
+function Game.run 0
     push argument 0
     pop pointer 0
 label Game_0
     push this 3
+    push constant 3
+    eq
+    not
+    not
+    if-goto Game_1
+    push pointer 0
+    call Game.playRound 1
+    pop temp 0
+    goto Game_0
+label Game_1
+    call Screen.clearScreen 0
+    pop temp 0
+    push constant 10
+    push constant 15
+    call Output.moveCursor 2
+    pop temp 0
+    push constant 35
+    call String.new 1
+    push constant 71
+    call String.appendChar 2
+    push constant 114
+    call String.appendChar 2
+    push constant 97
+    call String.appendChar 2
+    push constant 99
+    call String.appendChar 2
+    push constant 105
+    call String.appendChar 2
+    push constant 97
+    call String.appendChar 2
+    push constant 115
+    call String.appendChar 2
+    push constant 32
+    call String.appendChar 2
+    push constant 112
+    call String.appendChar 2
+    push constant 111
+    call String.appendChar 2
+    push constant 114
+    call String.appendChar 2
+    push constant 32
+    call String.appendChar 2
+    push constant 106
+    call String.appendChar 2
+    push constant 117
+    call String.appendChar 2
+    push constant 103
+    call String.appendChar 2
+    push constant 97
+    call String.appendChar 2
+    push constant 114
+    call String.appendChar 2
+    push constant 32
+    call String.appendChar 2
+    push constant 77
+    call String.appendChar 2
+    push constant 97
+    call String.appendChar 2
+    push constant 122
+    call String.appendChar 2
+    push constant 101
+    call String.appendChar 2
+    push constant 32
+    call String.appendChar 2
+    push constant 73
+    call String.appendChar 2
+    push constant 110
+    call String.appendChar 2
+    push constant 116
+    call String.appendChar 2
+    push constant 101
+    call String.appendChar 2
+    push constant 108
+    call String.appendChar 2
+    push constant 108
+    call String.appendChar 2
+    push constant 105
+    call String.appendChar 2
+    push constant 103
+    call String.appendChar 2
+    push constant 101
+    call String.appendChar 2
+    push constant 110
+    call String.appendChar 2
+    push constant 99
+    call String.appendChar 2
+    push constant 101
+    call String.appendChar 2
+    call Output.printString 1
+    pop temp 0
+label Game_2
+    push constant 1
+    neg
+    not
+    if-goto Game_3
+    push constant 1000
+    call Sys.wait 1
+    pop temp 0
+    goto Game_2
+label Game_3
+    push constant 0
+    return
+function Game.playRound 1
+    push argument 0
+    pop pointer 0
+    push pointer 0
+    call Game.resetGame 1
+    pop temp 0
+label Game_4
+    push this 3
     push constant 0
     eq
     not
-    if-goto Game_1
+    if-goto Game_5
     call Keyboard.keyPressed 0
     pop local 0
     push pointer 0
@@ -38,10 +148,10 @@ label Game_0
     add
     pop this 4
     push this 4
-    push constant 5
+    push constant 2
     gt
     not
-    if-goto Game_3
+    if-goto Game_7
     push this 2
     push this 1
     push this 0
@@ -49,22 +159,47 @@ label Game_0
     pop temp 0
     push constant 0
     pop this 4
-    goto Game_2
-label Game_3
-label Game_2
+    goto Game_6
+label Game_7
+label Game_6
     push pointer 0
     call Game.checkGameState 1
     pop temp 0
     push pointer 0
     call Game.draw 1
     pop temp 0
-    push constant 20
+    push constant 14
     call Sys.wait 1
     pop temp 0
-    goto Game_0
-label Game_1
+    goto Game_4
+label Game_5
     push pointer 0
-    call Game.showEndMessage 1
+    call Game.draw 1
+    pop temp 0
+    push pointer 0
+    call Game.showFinalMessage 1
+    pop temp 0
+    push pointer 0
+    call Game.waitFinalOption 1
+    pop temp 0
+    push constant 0
+    return
+function Game.resetGame 0
+    push argument 0
+    pop pointer 0
+    push constant 0
+    pop this 3
+    push constant 0
+    pop this 4
+    push this 1
+    push constant 1
+    push constant 1
+    call Player.setPosition 3
+    pop temp 0
+    push this 2
+    push constant 14
+    push constant 13
+    call Enemy.setPosition 3
     pop temp 0
     push constant 0
     return
@@ -75,40 +210,11 @@ function Game.handleInput 0
     push constant 131
     eq
     not
-    if-goto Game_5
-    push this 1
-    push constant 1
-    neg
-    push constant 0
-    push this 0
-    call Player.move 4
-    pop temp 0
-    goto Game_4
-label Game_5
-label Game_4
-    push argument 1
-    push constant 133
-    eq
-    not
-    if-goto Game_7
-    push this 1
-    push constant 1
-    push constant 0
-    push this 0
-    call Player.move 4
-    pop temp 0
-    goto Game_6
-label Game_7
-label Game_6
-    push argument 1
-    push constant 130
-    eq
-    not
     if-goto Game_9
     push this 1
-    push constant 0
     push constant 1
     neg
+    push constant 0
     push this 0
     call Player.move 4
     pop temp 0
@@ -116,19 +222,48 @@ label Game_6
 label Game_9
 label Game_8
     push argument 1
-    push constant 132
+    push constant 133
     eq
     not
     if-goto Game_11
     push this 1
-    push constant 0
     push constant 1
+    push constant 0
     push this 0
     call Player.move 4
     pop temp 0
     goto Game_10
 label Game_11
 label Game_10
+    push argument 1
+    push constant 130
+    eq
+    not
+    if-goto Game_13
+    push this 1
+    push constant 0
+    push constant 1
+    neg
+    push this 0
+    call Player.move 4
+    pop temp 0
+    goto Game_12
+label Game_13
+label Game_12
+    push argument 1
+    push constant 132
+    eq
+    not
+    if-goto Game_15
+    push this 1
+    push constant 0
+    push constant 1
+    push this 0
+    call Player.move 4
+    pop temp 0
+    goto Game_14
+label Game_15
+label Game_14
     push constant 0
     return
 function Game.checkGameState 0
@@ -146,12 +281,12 @@ function Game.checkGameState 0
     eq
     and
     not
-    if-goto Game_13
+    if-goto Game_17
     push constant 2
     pop this 3
-    goto Game_12
-label Game_13
-label Game_12
+    goto Game_16
+label Game_17
+label Game_16
     push this 0
     push this 1
     call Player.getRow 1
@@ -159,12 +294,12 @@ label Game_12
     call Player.getCol 1
     call Maze.isExit 3
     not
-    if-goto Game_15
+    if-goto Game_19
     push constant 1
     pop this 3
-    goto Game_14
-label Game_15
-label Game_14
+    goto Game_18
+label Game_19
+label Game_18
     push constant 0
     return
 function Game.draw 0
@@ -181,21 +316,81 @@ function Game.draw 0
     push this 2
     call Enemy.draw 1
     pop temp 0
+    push pointer 0
+    call Game.drawSidePanel 1
+    pop temp 0
     push constant 0
     return
-function Game.showEndMessage 0
+function Game.drawSidePanel 0
     push argument 0
     pop pointer 0
-    push constant 22
+    push constant 1
+    neg
+    call Screen.setColor 1
+    pop temp 0
+    push constant 264
     push constant 0
+    push constant 267
+    push constant 255
+    call Screen.drawRectangle 4
+    pop temp 0
+    push constant 285
+    push constant 20
+    push constant 480
+    push constant 22
+    call Screen.drawRectangle 4
+    pop temp 0
+    push constant 285
+    push constant 50
+    push constant 480
+    push constant 52
+    call Screen.drawRectangle 4
+    pop temp 0
+    push constant 285
+    push constant 80
+    push constant 480
+    push constant 82
+    call Screen.drawRectangle 4
+    pop temp 0
+    push constant 285
+    push constant 110
+    push constant 480
+    push constant 112
+    call Screen.drawRectangle 4
+    pop temp 0
+    push constant 290
+    push constant 140
+    push constant 310
+    push constant 160
+    call Screen.drawRectangle 4
+    pop temp 0
+    push constant 320
+    push constant 140
+    push constant 340
+    push constant 160
+    call Screen.drawRectangle 4
+    pop temp 0
+    push constant 350
+    push constant 140
+    push constant 370
+    push constant 160
+    call Screen.drawRectangle 4
+    pop temp 0
+    push constant 0
+    return
+function Game.showFinalMessage 0
+    push argument 0
+    pop pointer 0
+    push constant 2
+    push constant 36
     call Output.moveCursor 2
     pop temp 0
     push this 3
     push constant 1
     eq
     not
-    if-goto Game_17
-    push constant 20
+    if-goto Game_21
+    push constant 9
     call String.new 1
     push constant 86
     call String.appendChar 2
@@ -215,39 +410,45 @@ function Game.showEndMessage 0
     call String.appendChar 2
     push constant 33
     call String.appendChar 2
-    push constant 32
-    call String.appendChar 2
+    call Output.printString 1
+    pop temp 0
+    push constant 4
+    push constant 36
+    call Output.moveCursor 2
+    pop temp 0
+    push constant 10
+    call String.new 1
     push constant 69
     call String.appendChar 2
-    push constant 83
+    push constant 115
     call String.appendChar 2
-    push constant 67
+    push constant 99
     call String.appendChar 2
-    push constant 65
+    push constant 97
     call String.appendChar 2
-    push constant 80
+    push constant 112
     call String.appendChar 2
-    push constant 65
+    push constant 97
     call String.appendChar 2
-    push constant 83
+    push constant 115
     call String.appendChar 2
-    push constant 84
+    push constant 116
     call String.appendChar 2
-    push constant 69
+    push constant 101
     call String.appendChar 2
     push constant 46
     call String.appendChar 2
     call Output.printString 1
     pop temp 0
-    goto Game_16
-label Game_17
-label Game_16
+    goto Game_20
+label Game_21
+label Game_20
     push this 3
     push constant 2
     eq
     not
-    if-goto Game_19
-    push constant 22
+    if-goto Game_23
+    push constant 8
     call String.new 1
     push constant 68
     call String.appendChar 2
@@ -265,48 +466,155 @@ label Game_16
     call String.appendChar 2
     push constant 33
     call String.appendChar 2
-    push constant 32
-    call String.appendChar 2
+    call Output.printString 1
+    pop temp 0
+    push constant 4
+    push constant 36
+    call Output.moveCursor 2
+    pop temp 0
+    push constant 13
+    call String.new 1
     push constant 84
     call String.appendChar 2
-    push constant 69
+    push constant 101
     call String.appendChar 2
     push constant 32
     call String.appendChar 2
-    push constant 65
+    push constant 97
     call String.appendChar 2
-    push constant 84
+    push constant 116
     call String.appendChar 2
-    push constant 82
+    push constant 114
     call String.appendChar 2
-    push constant 65
+    push constant 97
     call String.appendChar 2
-    push constant 80
+    push constant 112
     call String.appendChar 2
-    push constant 65
+    push constant 97
     call String.appendChar 2
-    push constant 82
+    push constant 114
     call String.appendChar 2
-    push constant 79
+    push constant 111
     call String.appendChar 2
-    push constant 78
+    push constant 110
     call String.appendChar 2
     push constant 46
     call String.appendChar 2
     call Output.printString 1
     pop temp 0
-    goto Game_18
-label Game_19
-label Game_18
-label Game_20
+    goto Game_22
+label Game_23
+label Game_22
+    push constant 7
+    push constant 36
+    call Output.moveCursor 2
+    pop temp 0
+    push constant 13
+    call String.new 1
+    push constant 82
+    call String.appendChar 2
+    push constant 32
+    call String.appendChar 2
+    push constant 61
+    call String.appendChar 2
+    push constant 32
+    call String.appendChar 2
+    push constant 114
+    call String.appendChar 2
+    push constant 101
+    call String.appendChar 2
+    push constant 105
+    call String.appendChar 2
+    push constant 110
+    call String.appendChar 2
+    push constant 105
+    call String.appendChar 2
+    push constant 99
+    call String.appendChar 2
+    push constant 105
+    call String.appendChar 2
+    push constant 97
+    call String.appendChar 2
+    push constant 114
+    call String.appendChar 2
+    call Output.printString 1
+    pop temp 0
+    push constant 8
+    push constant 36
+    call Output.moveCursor 2
+    pop temp 0
+    push constant 9
+    call String.new 1
+    push constant 81
+    call String.appendChar 2
+    push constant 32
+    call String.appendChar 2
+    push constant 61
+    call String.appendChar 2
+    push constant 32
+    call String.appendChar 2
+    push constant 115
+    call String.appendChar 2
+    push constant 97
+    call String.appendChar 2
+    push constant 108
+    call String.appendChar 2
+    push constant 105
+    call String.appendChar 2
+    push constant 114
+    call String.appendChar 2
+    call Output.printString 1
+    pop temp 0
+    push constant 0
+    return
+function Game.waitFinalOption 2
+    push argument 0
+    pop pointer 0
     push constant 1
     neg
+    pop local 1
+label Game_24
+    push local 1
     not
-    if-goto Game_21
-    push constant 1000
+    if-goto Game_25
+    call Keyboard.keyPressed 0
+    pop local 0
+    push local 0
+    push constant 82
+    eq
+    push local 0
+    push constant 114
+    eq
+    or
+    not
+    if-goto Game_27
+    push constant 0
+    pop this 3
+    push constant 0
+    pop local 1
+    goto Game_26
+label Game_27
+label Game_26
+    push local 0
+    push constant 81
+    eq
+    push local 0
+    push constant 113
+    eq
+    or
+    not
+    if-goto Game_29
+    push constant 3
+    pop this 3
+    push constant 0
+    pop local 1
+    goto Game_28
+label Game_29
+label Game_28
+    push constant 50
     call Sys.wait 1
     pop temp 0
-    goto Game_20
-label Game_21
+    goto Game_24
+label Game_25
     push constant 0
     return

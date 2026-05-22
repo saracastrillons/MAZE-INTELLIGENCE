@@ -3,7 +3,7 @@ class Game {
     field Player player;
     field Enemy enemy;
 
-    field int state;        // 0=jugando, 1=victoria, 2=derrota
+    field int state; // 0 jugando, 1 victoria, 2 derrota, 3 salir
     field int tick;
 
     constructor Game new() {
@@ -16,25 +16,58 @@ class Game {
     }
 
     method void run() {
+        while (~(state = 3)) {
+            do playRound();
+        }
+
+        do Screen.clearScreen();
+        do Output.moveCursor(10, 15);
+        do Output.printString("Gracias por jugar Maze Intelligence");
+
+        while (true) {
+            do Sys.wait(1000);
+        }
+
+        return;
+    }
+
+    method void playRound() {
         var int key;
+
+        do resetGame();
 
         while (state = 0) {
             let key = Keyboard.keyPressed();
             do handleInput(key);
 
-            // El enemigo se mueve cada 6 ciclos.
             let tick = tick + 1;
-            if (tick > 5) {
+
+            // Enemigo rapido.
+            if (tick > 2) {
                 do enemy.update(player, maze);
                 let tick = 0;
             }
+
             do checkGameState();
             do draw();
 
-            do Sys.wait(20);
+            do Sys.wait(14);
         }
 
-        do showEndMessage();
+        do draw();
+        do showFinalMessage();
+        do waitFinalOption();
+
+        return;
+    }
+
+    method void resetGame() {
+        let state = 0;
+        let tick = 0;
+
+        do player.setPosition(1, 1);
+        do enemy.setPosition(14, 13);
+
         return;
     }
 
@@ -43,6 +76,7 @@ class Game {
         if (key = 133) { do player.move(1, 0, maze); }
         if (key = 130) { do player.move(0, -1, maze); }
         if (key = 132) { do player.move(0, 1, maze); }
+
         return;
     }
 
@@ -57,27 +91,83 @@ class Game {
 
         return;
     }
+
     method void draw() {
         do Screen.clearScreen();
+
         do maze.draw();
         do player.draw();
         do enemy.draw();
+
+        do drawSidePanel();
+
         return;
     }
 
-    method void showEndMessage() {
-        do Output.moveCursor(22, 0);
+    method void drawSidePanel() {
+        do Screen.setColor(true);
+
+        // Separador del panel derecho.
+        do Screen.drawRectangle(264, 0, 267, 255);
+
+        // Decoracion visual sin texto para evitar overflow.
+        do Screen.drawRectangle(285, 20, 480, 22);
+        do Screen.drawRectangle(285, 50, 480, 52);
+        do Screen.drawRectangle(285, 80, 480, 82);
+        do Screen.drawRectangle(285, 110, 480, 112);
+
+        // Pequeños indicadores decorativos.
+        do Screen.drawRectangle(290, 140, 310, 160);
+        do Screen.drawRectangle(320, 140, 340, 160);
+        do Screen.drawRectangle(350, 140, 370, 160);
+
+        return;
+    }
+
+    method void showFinalMessage() {
+        do Output.moveCursor(2, 36);
 
         if (state = 1) {
-            do Output.printString("VICTORIA! ESCAPASTE.");
+            do Output.printString("VICTORIA!");
+            do Output.moveCursor(4, 36);
+            do Output.printString("Escapaste.");
         }
 
         if (state = 2) {
-            do Output.printString("DERROTA! TE ATRAPARON.");
+            do Output.printString("DERROTA!");
+            do Output.moveCursor(4, 36);
+            do Output.printString("Te atraparon.");
         }
 
-        while (true) {
-            do Sys.wait(1000);
+        do Output.moveCursor(7, 36);
+        do Output.printString("R = reiniciar");
+
+        do Output.moveCursor(8, 36);
+        do Output.printString("Q = salir");
+
+        return;
+    }
+
+    method void waitFinalOption() {
+        var int key;
+        var boolean waiting;
+
+        let waiting = true;
+
+        while (waiting) {
+            let key = Keyboard.keyPressed();
+
+            if ((key = 82) | (key = 114)) {
+                let state = 0;
+                let waiting = false;
+            }
+
+            if ((key = 81) | (key = 113)) {
+                let state = 3;
+                let waiting = false;
+            }
+
+            do Sys.wait(50);
         }
 
         return;

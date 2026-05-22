@@ -5,7 +5,15 @@ class Player {
     constructor Player new(int r, int c) {
         let row = r;
         let col = c;
+
         return this;
+    }
+
+    method void setPosition(int r, int c) {
+        let row = r;
+        let col = c;
+
+        return;
     }
 
     method void move(int dr, int dc, Maze maze) {
@@ -28,12 +36,21 @@ class Player {
         let x = col * 16;
         let y = row * 16;
 
+        // Jugador: figura más visible.
         do Screen.setColor(true);
-        do Screen.drawRectangle(x + 3, y + 3, x + 12, y + 12);
+        do Screen.drawRectangle(x + 5, y + 2, x + 10, y + 7);
+        do Screen.drawRectangle(x + 4, y + 8, x + 11, y + 12);
+        do Screen.drawRectangle(x + 3, y + 13, x + 5, y + 14);
+        do Screen.drawRectangle(x + 10, y + 13, x + 12, y + 14);
 
         return;
     }
 
-    method int getRow() { return row; }
-    method int getCol() { return col; }
+    method int getRow() {
+        return row;
+    }
+
+    method int getCol() {
+        return col;
+    }
 }
