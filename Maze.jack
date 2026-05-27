@@ -32,105 +32,99 @@ class Maze {
             let r = r + 1;
         }
 
-        // Laberinto mas dificil: mas muros internos.
+        // Muros internos: laberinto con varias rutas y no un solo pasillo.
+
+        // Bloque superior izquierdo.
         do setCell(2, 2, 1);
         do setCell(2, 3, 1);
-        do setCell(2, 4, 1);
         do setCell(2, 5, 1);
+        do setCell(2, 6, 1);
         do setCell(2, 7, 1);
-        do setCell(2, 8, 1);
-        do setCell(2, 9, 1);
-        do setCell(2, 11, 1);
-        do setCell(2, 12, 1);
-        do setCell(2, 13, 1);
 
-        do setCell(3, 2, 1);
-        do setCell(3, 5, 1);
+        do setCell(3, 3, 1);
         do setCell(3, 7, 1);
+        do setCell(3, 9, 1);
         do setCell(3, 10, 1);
-        do setCell(3, 13, 1);
+        do setCell(3, 11, 1);
 
-        do setCell(4, 2, 1);
-        do setCell(4, 4, 1);
+        do setCell(4, 1, 1);
+        do setCell(4, 3, 1);
         do setCell(4, 5, 1);
         do setCell(4, 7, 1);
-        do setCell(4, 8, 1);
-        do setCell(4, 10, 1);
         do setCell(4, 11, 1);
         do setCell(4, 13, 1);
 
-        do setCell(5, 4, 1);
-        do setCell(5, 8, 1);
+        // Centro izquierdo.
+        do setCell(5, 5, 1);
+        do setCell(5, 6, 1);
+        do setCell(5, 7, 1);
+        do setCell(5, 9, 1);
         do setCell(5, 11, 1);
-        do setCell(5, 12, 1);
         do setCell(5, 13, 1);
 
         do setCell(6, 2, 1);
         do setCell(6, 3, 1);
-        do setCell(6, 4, 1);
-        do setCell(6, 6, 1);
-        do setCell(6, 7, 1);
-        do setCell(6, 8, 1);
-        do setCell(6, 10, 1);
-        do setCell(6, 12, 1);
+        do setCell(6, 5, 1);
+        do setCell(6, 9, 1);
+        do setCell(6, 11, 1);
 
-        do setCell(7, 2, 1);
+        do setCell(7, 3, 1);
+        do setCell(7, 5, 1);
         do setCell(7, 6, 1);
-        do setCell(7, 10, 1);
+        do setCell(7, 7, 1);
+        do setCell(7, 11, 1);
         do setCell(7, 12, 1);
         do setCell(7, 13, 1);
 
-        do setCell(8, 2, 1);
-        do setCell(8, 4, 1);
-        do setCell(8, 5, 1);
-        do setCell(8, 6, 1);
-        do setCell(8, 8, 1);
+        // Zona central.
+        do setCell(8, 1, 1);
+        do setCell(8, 3, 1);
+        do setCell(8, 7, 1);
         do setCell(8, 9, 1);
         do setCell(8, 10, 1);
         do setCell(8, 13, 1);
 
+        do setCell(9, 3, 1);
         do setCell(9, 4, 1);
-        do setCell(9, 8, 1);
+        do setCell(9, 5, 1);
+        do setCell(9, 7, 1);
+        do setCell(9, 10, 1);
         do setCell(9, 12, 1);
-        do setCell(9, 13, 1);
 
         do setCell(10, 2, 1);
-        do setCell(10, 3, 1);
-        do setCell(10, 4, 1);
-        do setCell(10, 5, 1);
-        do setCell(10, 6, 1);
+        do setCell(10, 7, 1);
         do setCell(10, 8, 1);
         do setCell(10, 10, 1);
-        do setCell(10, 11, 1);
         do setCell(10, 12, 1);
+        do setCell(10, 13, 1);
 
+        // Parte inferior con más bifurcaciones.
         do setCell(11, 2, 1);
+        do setCell(11, 4, 1);
+        do setCell(11, 5, 1);
         do setCell(11, 8, 1);
         do setCell(11, 10, 1);
 
-        do setCell(12, 2, 1);
         do setCell(12, 4, 1);
-        do setCell(12, 5, 1);
         do setCell(12, 6, 1);
-        do setCell(12, 7, 1);
         do setCell(12, 8, 1);
+        do setCell(12, 9, 1);
         do setCell(12, 10, 1);
         do setCell(12, 12, 1);
-        do setCell(12, 13, 1);
 
         do setCell(13, 2, 1);
-        do setCell(13, 10, 1);
+        do setCell(13, 6, 1);
         do setCell(13, 12, 1);
+        do setCell(13, 13, 1);
 
-        do setCell(14, 4, 1);
-        do setCell(14, 5, 1);
         do setCell(14, 6, 1);
         do setCell(14, 8, 1);
         do setCell(14, 10, 1);
-        do setCell(14, 12, 1);
 
-        // Salida.
-        do setCell(14, 14, 2);
+        // Se asegura que posiciones importantes estén libres.
+        do setCell(1, 1, 0);      // Inicio jugador
+        do setCell(14, 13, 0);    // Inicio enemigo
+        do setCell(14, 14, 2);    // Salida
 
         return;
     }
@@ -184,14 +178,14 @@ class Maze {
                 }
 
                 if (value = 0) {
-                    // Borde fino para que el camino se vea como cuadrícula.
+                    // Cuadricula del camino.
                     do Screen.setColor(true);
                     do Screen.drawRectangle(x, y, x + 15, y);
                     do Screen.drawRectangle(x, y, x, y + 15);
                 }
 
                 if (value = 2) {
-                    // Salida: dibujo tipo objetivo.
+                    // Salida.
                     do Screen.setColor(true);
                     do Screen.drawRectangle(x + 3, y + 3, x + 12, y + 12);
                     do Screen.setColor(false);

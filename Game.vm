@@ -148,7 +148,7 @@ label Game_4
     add
     pop this 4
     push this 4
-    push constant 2
+    push constant 1
     gt
     not
     if-goto Game_7

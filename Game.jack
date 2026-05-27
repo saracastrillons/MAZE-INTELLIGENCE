@@ -42,12 +42,11 @@ class Game {
 
             let tick = tick + 1;
 
-            // Enemigo rapido.
-            if (tick > 2) {
-                do enemy.update(player, maze);
-                let tick = 0;
-            }
-
+            
+           if (tick > 1) {
+    do enemy.update(player, maze);
+    let tick = 0;
+}
             do checkGameState();
             do draw();
 
